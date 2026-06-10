@@ -13,17 +13,17 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Paladin_diffuse
-    second: {fileID: 2800000, guid: 85d3af403460a0847b333d37b857266c, type: 3}
+    second: {fileID: 2800000, guid: 0a22fd77325ba534dbb05176a6cdbe57, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Paladin_normal
-    second: {fileID: 2800000, guid: 09f340a6101751f4ca5b4871c4f0f01a, type: 3}
+    second: {fileID: 2800000, guid: f8cbb04ea7f9811449f7d7faa9f2ad04, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Paladin_specular
-    second: {fileID: 2800000, guid: 69ec6928cb49ac146a13f869910812dd, type: 3}
+    second: {fileID: 2800000, guid: cc7843ff1e326e148bfc5e41df7dbf95, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

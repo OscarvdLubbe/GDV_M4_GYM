@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Scripting.APIUpdating;
@@ -12,10 +13,15 @@ public class InputPlayer : MonoBehaviour
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
-    private Rigidbody rb;
-    private float movespeed = 5f;
+    [SerializeField] private float sprintMultiplier = 2f;
+    //private Rigidbody rb;
+    private CharacterController cc;
+    private float movespeed = 400f;
+    [SerializeField] private float jumpHeight = 2f;
     private float jumpForce = 200f;
     private bool Grounded;
+    private float verticalVelocity;
+    [SerializeField] private float gravity = -20f;
 
 
     void Awake()
@@ -38,54 +44,63 @@ public class InputPlayer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        
+        //rb = GetComponent<Rigidbody>();
+        cc= GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (jumpAction.WasPressedThisFrame() && Grounded == true)
+        if (cc.isGrounded)
         {
-            Debug.Log("Jump has been pressed");
-            rb.AddForce(Vector3.up * jumpForce , ForceMode.Force);
-            animator.SetTrigger("JumpTrigger");
+            verticalVelocity = -1f; // kleine downward force om grounded te blijven
+
+            if (jumpAction.WasPressedThisFrame())
+            {
+                // Sprong-formule: v = sqrt(2 * |g| * h)
+                verticalVelocity = Mathf.Sqrt(2f * Mathf.Abs(gravity) * jumpHeight);
+                animator.SetTrigger("JumpTrigger");
+            }
         }
-        else if (jumpAction.IsPressed())
+        else
         {
-            Debug.Log("Jump held");
+            // Niet op de grond: zwaartekracht toepassen
+            verticalVelocity += gravity * Time.deltaTime;
         }
-        else if (jumpAction.WasReleasedThisFrame())
+        if (sprintAction.WasPerformedThisFrame())
         {
-            Debug.Log("no more jump");
+            movespeed *= sprintMultiplier;
         }
         animator.SetFloat("Speed", movespeed);
-
-        
-        
 
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
         float currentMoveSpeed = moveInput.y * movespeed * Time.deltaTime;
-
-        transform.Translate(transform.forward * currentMoveSpeed, Space.World);
+        cc.Move(transform.forward * currentMoveSpeed * Time.deltaTime);
+        
+        //transform.Translate(transform.forward * currentMoveSpeed, Space.World);
         transform.Rotate(Vector3.up , moveInput.x * Time.deltaTime * 100f, Space.World);
 
         animator.SetFloat("Speed", currentMoveSpeed);
         Debug.Log(Grounded);
+
+        
     }
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-        {
-            Grounded = true;   
-        }
-    }
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-        {
-            Grounded = false;   
-        }
-    }
+    
+    // void OnCollisionEnter(Collision collision)
+    // {
+    //     if (collision.collider.CompareTag("Ground"))
+    //     {
+    //         Grounded = true;   
+    //     }
+    // }
+    // void OnCollisionExit(Collision collision)
+    // {
+    //     if (collision.collider.CompareTag("Ground"))
+    //     {
+    //         Grounded = false;   
+    //     }
+    // }
 }
+
+

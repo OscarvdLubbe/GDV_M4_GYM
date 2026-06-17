@@ -8,3 +8,6 @@ animatie en movement
 
 caracter controller
 ![](/fotos/knightCC.gif)
+
+Camera cinemachine
+![](/fotos/cameraknightgae3dgym.gif)
